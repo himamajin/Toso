@@ -2,6 +2,7 @@ package himamajin.niconico.thgame;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,9 +15,14 @@ import org.bukkit.scoreboard.Team;
  */
 public class THCommand implements CommandExecutor {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = sender.getServer().getPlayerExact(sender.getName());//コマンドを実行したプレイヤー
+		
+		//コンフィグを読み込ませるための定義
+		final Main PL = Main.plugin;
+		
 		//引数がないとき
 		if(args.length==0){
 			//コマンドの一覧を説明を表示（仮）
@@ -31,7 +37,7 @@ public class THCommand implements CommandExecutor {
 			if(args[0].equals("hunter")){
 		        Player target = Bukkit.getServer().getPlayerExact(args[1]);
 		        if (target == null) {
-		            sender.sendMessage(args[1] + " というプレイヤーは見つかりません。");
+		            sender.sendMessage(args[1] + " というプレイヤーは見つかりません");
 		            return true;
 		        }
 
@@ -42,19 +48,42 @@ public class THCommand implements CommandExecutor {
 		        int check = Main.hunter.indexOf(target);
 		        if(check == -1){
 		        	Main.hunter.add(target);
-					Team team = Main.teamYellow;
+					Team team = Main.teamRed;
 					team.addPlayer(target);
 					String name = target.getPlayerListName();
-					player.sendMessage(ChatColor.GREEN+name+"をハンターに追加しました。");
+					player.sendMessage(ChatColor.GREEN+name+"をハンターに追加しました");
+					return true;
 		        }else{
 		        	//すでに登録されている場合
-		        	player.sendMessage(ChatColor.RED+"このプレイヤーはすでに登録されています。");
+		        	player.sendMessage(ChatColor.RED+"このプレイヤーはすでに登録されています");
+		        	return true;
 		        }
 
 
 			}
-			//playerの時
+			//ハンターから逃走者にするとき
 			if(args[0].equals("player")){
+		        Player target = Bukkit.getServer().getPlayerExact(args[1]);
+		        if (target == null) {
+		            sender.sendMessage(args[1] + " というプレイヤーは見つかりません");
+		            return true;
+		        }
+
+		        int check = Main.hunter.indexOf(target);
+		        if(check == -1){
+					String name = target.getPlayerListName();
+					player.sendMessage(ChatColor.RED+name+"はハンターではありません！");
+					return true;
+		        }else{
+		        	//arraylist[hunter]から追放。チームを空にする。
+		        	Main.hunter.remove(target);
+					Team team = Main.teamRed;
+					team.removePlayer(target);
+					String name = target.getPlayerListName();
+					player.sendMessage(ChatColor.GREEN+name+"をハンターから逃走者へと変更しました");
+
+		        }
+
 
 			}
 			//randomの時
@@ -71,10 +100,32 @@ public class THCommand implements CommandExecutor {
 			}
 			//setjailの時
 			if(args[0].equals("setjail")){
+				//牢屋を追加する
+				Location loc = player.getLocation();
+				double xjail = loc.getX();
+				double yjail = loc.getY();
+				double zjail = loc.getZ();
+				PL.getConfig().set("jail.x", xjail);
+				PL.getConfig().set("jail.y", yjail);
+				PL.getConfig().set("jail.z", zjail);
+				player.sendMessage(ChatColor.GREEN+"牢屋を登録しました");
+				PL.saveConfig();
+				return true;
 
 			}
 			//setrvの時
 			if(args[0].equals("setrv")){
+				//復活ポイントを追加する
+				Location loc = player.getLocation();
+				double xrv = loc.getX();
+				double yrv = loc.getY();
+				double zrv = loc.getZ();
+				PL.getConfig().set("rv.x", xrv);
+				PL.getConfig().set("rv.y", yrv);
+				PL.getConfig().set("rv.z", zrv);
+				player.sendMessage(ChatColor.GREEN+"復活地点を登録しました");
+				PL.saveConfig();
+				return true;
 
 			}
 			//startの時
@@ -91,6 +142,17 @@ public class THCommand implements CommandExecutor {
 			}
 			//setarenaの時
 			if(args[0].equals("setarena")){
+				//逃走者スタート地点を追加する
+				Location loc = player.getLocation();
+				double xarena = loc.getX();
+				double yarena = loc.getY();
+				double zarena = loc.getZ();
+				PL.getConfig().set("arena.x", xarena);
+				PL.getConfig().set("arena.y", yarena);
+				PL.getConfig().set("arena.z", zarena);
+				player.sendMessage(ChatColor.GREEN+"逃走者スタート地点を登録しました");
+				PL.saveConfig();
+				return true;
 
 			}
 			//setboxの時
