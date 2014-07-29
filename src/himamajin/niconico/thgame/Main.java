@@ -11,7 +11,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 public class Main extends JavaPlugin{
-
+	
     //ハンターのチーム
 	protected static final String TEAM_RED_NAME = "team_red";
     //逃走者のチーム
@@ -20,28 +20,31 @@ public class Main extends JavaPlugin{
 	protected static final String TEAM_YELLOW_NAME = "team_black";
  
 	//ココらへんの処理は適当なんで気にしなくてよし
-	/**
-	 * staticをつけて他の打クラスでも使用できるようにする
-	 */
 	static protected Team teamRed;
 	static protected Team teamBlue;
     static protected Team teamYellow;
 
-
-
+	public static Main plugin;
+    
+    
+    
 	@Override
 	//プラグインが読み込まれた時
 	public void onEnable() {
-
+		//デフォルトのコンフィグを出力
+		saveDefaultConfig();
+		plugin = this;
+		
+		
 		//'toso'というコマンドが打たれた時Commandを呼び出す
         getCommand("toso").setExecutor(new THCommand());
 
 		//Listenerを実装しているクラスを登録する
 		getServer().getPluginManager().registerEvents(new EventListener(), this);
-
-
-
-
+		
+		
+		
+		
 		/*チームの設定等々*/
 	       // メインスコアボードを取得します。
         ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -73,19 +76,17 @@ public class Main extends JavaPlugin{
         }
 
 	}
-	
 	//プラグインが再起動、終了するとき
 	public void onDisable(){
-
+		
 	}
 	
-
-
+	
+	
 	//ArrayListを作成する
 	static ArrayList <Player> hunter = new ArrayList <Player> ();//ハンターのlist
 	static ArrayList <Player> touso = new ArrayList <Player> ();//プレイヤーのlist
 
-
     
-
+	
 }
