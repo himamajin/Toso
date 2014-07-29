@@ -11,42 +11,44 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 public class Main extends JavaPlugin{
-	
-	
-    //ƒnƒ“ƒ^[‚Ìƒ`[ƒ€
+
+    //ãƒãƒ³ã‚¿ãƒ¼ã®ãƒãƒ¼ãƒ 
 	protected static final String TEAM_RED_NAME = "team_red";
-    //“¦‘–Ò‚Ìƒ`[ƒ€
+    //é€ƒèµ°è€…ã®ãƒãƒ¼ãƒ 
 	protected static final String TEAM_BLUE_NAME = "team_blue";
-	//˜S–Ò‚Ìƒ`[ƒ€
+	//ç‰¢ç„è€…ã®ãƒãƒ¼ãƒ 
 	protected static final String TEAM_YELLOW_NAME = "team_black";
  
-	//ƒRƒR‚ç‚Ö‚ñ‚Ìˆ—‚Í“K“–‚È‚ñ‚Å‹C‚É‚µ‚È‚­‚Ä‚æ‚µ
-	protected Team teamRed;
-	protected Team teamBlue;
-    protected Team teamYellow;
-	
-	
-	
-	@Override
-	//ƒvƒ‰ƒOƒCƒ“‚ª“Ç‚İ‚Ü‚ê‚½
-	public void onEnable() {
-		
-		//'toso'‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh‚ª‘Å‚½‚ê‚½Command‚ğŒÄ‚Ño‚·
-        getCommand("toso").setExecutor(new Command());
+	//ã‚³ã‚³ã‚‰ã¸ã‚“ã®å‡¦ç†ã¯é©å½“ãªã‚“ã§æ°—ã«ã—ãªãã¦ã‚ˆã—
+	/**
+	 * staticã‚’ã¤ã‘ã¦ä»–ã®æ‰“ã‚¯ãƒ©ã‚¹ã§ã‚‚ä½¿ç”¨ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
+	 */
+	static protected Team teamRed;
+	static protected Team teamBlue;
+    static protected Team teamYellow;
 
-		//Listener‚ğÀ‘•‚µ‚Ä‚¢‚éƒNƒ‰ƒX‚ğ“o˜^‚·‚é
+
+
+	@Override
+	//ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ãŒèª­ã¿è¾¼ã¾ã‚ŒãŸæ™‚
+	public void onEnable() {
+
+		//'toso'ã¨ã„ã†ã‚³ãƒãƒ³ãƒ‰ãŒæ‰“ãŸã‚ŒãŸæ™‚Commandã‚’å‘¼ã³å‡ºã™
+        getCommand("toso").setExecutor(new THCommand());
+
+		//Listenerã‚’å®Ÿè£…ã—ã¦ã„ã‚‹ã‚¯ãƒ©ã‚¹ã‚’ç™»éŒ²ã™ã‚‹
 		getServer().getPluginManager().registerEvents(new EventListener(), this);
-		
-		
-		
-		
-		/*ƒ`[ƒ€‚Ìİ’è“™X*/
-	       // ƒƒCƒ“ƒXƒRƒAƒ{[ƒh‚ğæ“¾‚µ‚Ü‚·B
+
+
+
+
+		/*ãƒãƒ¼ãƒ ã®è¨­å®šç­‰ã€…*/
+	       // ãƒ¡ã‚¤ãƒ³ã‚¹ã‚³ã‚¢ãƒœãƒ¼ãƒ‰ã‚’å–å¾—ã—ã¾ã™ã€‚
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getMainScoreboard();
  
-        // ƒ`[ƒ€‚ªŠù‚É“o˜^‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©Šm”F‚µA
-        // “o˜^‚³‚ê‚Ä‚¢‚È‚¢‚È‚çV‹Kì¬‚µ‚Ü‚·B
+        // ãƒãƒ¼ãƒ ãŒæ—¢ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹ç¢ºèªã—ã€
+        // ç™»éŒ²ã•ã‚Œã¦ã„ãªã„ãªã‚‰æ–°è¦ä½œæˆã—ã¾ã™ã€‚
         teamRed = board.getTeam(TEAM_RED_NAME);
         if ( teamRed == null ) {
             teamRed = board.registerNewTeam(TEAM_RED_NAME);
@@ -71,18 +73,19 @@ public class Main extends JavaPlugin{
         }
 
 	}
-	//ƒvƒ‰ƒOƒCƒ“‚ªÄ‹N“®AI—¹‚·‚é‚Æ‚«
+	
+	//ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ãŒå†èµ·å‹•ã€çµ‚äº†ã™ã‚‹ã¨ã
 	public void onDisable(){
-		
+
 	}
 	
-	
-	
-	//ArrayList‚ğì¬‚·‚é
-	ArrayList <Player> hunter = new ArrayList <Player> ();//ƒnƒ“ƒ^[‚Ìlist
-	ArrayList <Player> touso = new ArrayList <Player> ();//ƒvƒŒƒCƒ„[‚Ìlist
-	
+
+
+	//ArrayListã‚’ä½œæˆã™ã‚‹
+	static ArrayList <Player> hunter = new ArrayList <Player> ();//ãƒãƒ³ã‚¿ãƒ¼ã®list
+	static ArrayList <Player> touso = new ArrayList <Player> ();//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®list
+
 
     
-	
+
 }
