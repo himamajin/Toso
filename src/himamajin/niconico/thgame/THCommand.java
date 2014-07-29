@@ -34,7 +34,7 @@ public class THCommand implements CommandExecutor {
 			//各自の型の照合やargsの数等はチェックしていないので追加予定 2014/07/28
 
 			//hunterのとき
-			if(args[0].equals("hunter")){
+	if(args[0].equals("hunter")){
 		        Player target = Bukkit.getServer().getPlayerExact(args[1]);
 		        if (target == null) {
 		            sender.sendMessage(args[1] + " というプレイヤーは見つかりません");
@@ -62,7 +62,7 @@ public class THCommand implements CommandExecutor {
 
 			}
 			//ハンターから逃走者にするとき
-			if(args[0].equals("player")){
+	if(args[0].equals("player")){
 		        Player target = Bukkit.getServer().getPlayerExact(args[1]);
 		        if (target == null) {
 		            sender.sendMessage(args[1] + " というプレイヤーは見つかりません");
@@ -87,19 +87,19 @@ public class THCommand implements CommandExecutor {
 
 			}
 			//randomの時
-			if(args[0].equals("random")){
+	if(args[0].equals("random")){
 
 			}
 			//bookの時
-			if(args[0].equals("book")){
+	if(args[0].equals("book")){
 
 			}
 			//missionの時
-			if(args[0].equals("mission")){
+	if(args[0].equals("mission")){
 
 			}
 			//setjailの時
-			if(args[0].equals("setjail")){
+	if(args[0].equals("setjail")){
 				//牢屋を追加する
 				Location loc = player.getLocation();
 				double xjail = loc.getX();
@@ -114,7 +114,7 @@ public class THCommand implements CommandExecutor {
 
 			}
 			//setrvの時
-			if(args[0].equals("setrv")){
+	if(args[0].equals("setrv")){
 				//復活ポイントを追加する
 				Location loc = player.getLocation();
 				double xrv = loc.getX();
@@ -129,19 +129,19 @@ public class THCommand implements CommandExecutor {
 
 			}
 			//startの時
-			if(args[0].equals("start")){
+	if(args[0].equals("start")){
 
 			}
 			//stopの時
-			if(args[0].equals("stop")){
+	if(args[0].equals("stop")){
 
 			}
 			//restartの時
-			if(args[0].equals("restart")){
+	if(args[0].equals("restart")){
 
 			}
 			//setarenaの時
-			if(args[0].equals("setarena")){
+	if(args[0].equals("setarena")){
 				//逃走者スタート地点を追加する
 				Location loc = player.getLocation();
 				double xarena = loc.getX();
@@ -156,15 +156,15 @@ public class THCommand implements CommandExecutor {
 
 			}
 			//setboxの時
-			if(args[0].equals("setbox")){
+	if(args[0].equals("setbox")){
 
 			}
 			//boxの時
-			if(args[0].equals("box")){
+	if(args[0].equals("box")){
 
 			}
 			//rvの時
-			if(args[0].equals("rv")){
+	if(args[0].equals("rv")){
 
 			}
 
