@@ -1,16 +1,30 @@
 package himamajin.niconico.thgame;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.BlockIterator;
 
 /**
  *	クラスをextendsするとエラーが起きるようなのでstatic修飾子の変数を使う
@@ -120,8 +134,83 @@ public class THCommand implements CommandExecutor {
 			}
 			//missionの時
 	if(args[0].equals("mission")){
+    	if(args.length==2){
+		           for(Player p : Bukkit.getServer().getOnlinePlayers()){
+		        	   for(ItemStack item : p.getInventory().getContents()){
+		        		   if(item != null){
+		        			   if(item.getType().equals(Material.WRITTEN_BOOK)){
+		        				   BookMeta meta = (BookMeta) item.getItemMeta();
+		        				   if(meta.getTitle().equals("携帯電話")){
+		        					   //mission.txtの内容を取得
+		        					   FileSystem fs = FileSystems.getDefault();
+		        						Path path = fs.getPath("plugins/THgame/book/"+ args[1] +".txt");
+        								if(path == null){
+	        								player.sendMessage(ChatColor.RED+"[THgame]"+args[1]+"というミッションは存在しません");
+	        								return true;
+        								}else{
+		        						if(Files.exists(path, LinkOption.NOFOLLOW_LINKS)){
+		        							try {
+		        								List<String> list = Files.readAllLines(path, Charset.forName(System.getProperty("file.encoding")));
+		        								//ファイルが存在する場合
+		        								//引数を取得
+		        								StringBuilder builder = new StringBuilder();
+		        								for(String s : list){
+		        									StringBuilder sb = new StringBuilder(s);
+		        									replace(sb, "<b>", "" + ChatColor.BOLD + "");
+		        									replace(sb, "<i>", "" + ChatColor.ITALIC + "");
+		        									replace(sb, "<magic>", "" + ChatColor.MAGIC + "");
+		        									replace(sb, "<s>", "" + ChatColor.STRIKETHROUGH + "");
+		        									replace(sb, "<u>", "" + ChatColor.UNDERLINE + "");
+		        									replace(sb, "<aqua>", "" + ChatColor.RESET + "");
+		        									replace(sb, "<black>", "" + ChatColor.BLACK + "");
+		        									replace(sb, "<blue>", "" + ChatColor.BLUE + "");
+		        									replace(sb, "<dark_aqua>", "" + ChatColor.DARK_AQUA + "");
+		        									replace(sb, "<dark_blue>", "" + ChatColor.DARK_BLUE + "");
+		        									replace(sb, "<dark_gray>", "" + ChatColor.DARK_GRAY + "");
+		        									replace(sb, "<dark_purple>", "" + ChatColor.DARK_PURPLE + "");
+		        									replace(sb, "<dark_red>", "" + ChatColor.DARK_RED + "");
+		        									replace(sb, "<gold>", "" + ChatColor.GOLD + "");
+		        									replace(sb, "<gray>", "" + ChatColor.GRAY + "");
+		        									replace(sb, "<green>", "" + ChatColor.GREEN + "");
+		        									replace(sb, "<light_purple>", "" + ChatColor.LIGHT_PURPLE + "");
+		        									replace(sb, "<red>", "" + ChatColor.RED + "");
+		        									replace(sb, "<white>", "" + ChatColor.WHITE + "");
+		        									replace(sb, "<yellow>", "" + ChatColor.YELLOW + "");
+		        									sb.append("\n");
+		        									builder.append(new String(sb));
+		        								}
+		        								String msg = new String(builder);
+		 		        					    meta.addPage(msg);
+				        					    item.setItemMeta(meta);
+		        								
+				        					    
+				        					    //ここまでごちゃごちゃしすぎて訳わかめ
+				        					    //いじらないように
+				        					    
+				        					    
+				        					    //難しかったので今は経験値音５回
+				        					    new THse().runTaskTimer(Main.plugin, 1, 0);
 
-			}
+				        						p.sendMessage(ChatColor.GOLD+"メールを受信しました…");
+		        							} catch (IOException e) {
+		        								//ファイルが存在しない場合
+		        								e.printStackTrace();
+		        							}
+		        						}
+		        				   }
+		        			   }
+		        		   }
+		        	   }
+		           }
+		           }
+				   player.sendMessage(ChatColor.GREEN+"[THgame]"+args[1]+"を発令しました！");
+	        	   return true;
+    	}else{
+    		//ファイル名が指定されていない時
+    		player.sendMessage(ChatColor.RED+"[THgame]ミッションが指定されていません");
+    		return true;
+    	}
+	}
 			//setjailの時
 	if(args[0].equals("setjail")){
 				//牢屋を追加する
@@ -181,28 +270,85 @@ public class THCommand implements CommandExecutor {
 			}
 			//setboxの時
 	if(args[0].equals("setbox")){
-
-			}
+    	if(args.length==2){
+				Block target = getTargetBlock(player);
+				Location loc = target.getLocation();
+				int xblock = (int) loc.getX();
+				int yblock = (int) loc.getY();
+				int zblock = (int) loc.getZ();
+				PL.getConfig().set(args[1]+".x", xblock);
+				PL.getConfig().set(args[1]+".y", yblock);
+				PL.getConfig().set(args[1]+".z", zblock);
+				player.sendMessage(ChatColor.GREEN+"[THgame]"+"ハンターボックス"+args[1]+"を設置しました");
+				PL.saveConfig();
+				return true;
+    	}else{
+    		player.sendMessage(ChatColor.RED+"[THgame]"+"ハンターボックスの名前を入れてください！");
+    		return true;
+    	}
+	}
 			//boxの時
 	if(args[0].equals("box")){
-
-			}
+	  	if(args.length==2){
+	  			//ハンターボックスを開放する。
+	  		    int xbox = -1000;//エラーチェックのため
+	  		        xbox = (int) PL.getConfig().get(args[1]+".x");
+	  		    int ybox = (int) PL.getConfig().get(args[1]+".y");
+	  		    int zbox = (int) PL.getConfig().get(args[1]+".z");
+	  		    if(xbox == -1000){
+	  		    	player.sendMessage(ChatColor.RED+"[THgame]指定されたハンターボックスは存在しません");
+	  		    	return true;
+	  		    }
+				World world = player.getWorld();
+	  		    Block box = world.getBlockAt(xbox, ybox, zbox);
+	  		    box.setType(Material.AIR);
+				Location loc = new Location(world, xbox, ybox, zbox);
+	  		    TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(loc,EntityType.PRIMED_TNT);
+	  		    tnt.setFuseTicks(0);
+	  		    Bukkit.broadcastMessage(ChatColor.GREEN+"[THgame]ハンターボックスが開放されました！！");
+	  		    player.sendMessage(ChatColor.GREEN+"[THgame]"+args[1]+"が開放されました");
+	  		    return true;
+	  	}
+	}
+	  			
+	  			
+	  			
+	  			
 			//rvの時
 	if(args[0].equals("rv")){
 
 			}
-
-
-
-
-
-
-
-
-
-			else return false;
 		}
 		return false;
 	}
 
+	private void replace(StringBuilder sb, String from, String to){
+		int index = sb.indexOf(from);
+		while(index != -1){
+			sb.replace(index, index + from.length(), to);
+			index += to.length();
+			index = sb.indexOf(from, index);
+		}
 	}
+	
+	private Block getTargetBlock(Player player) {
+		 
+	    // 視線上のブロックを100ブロック先まで取得
+	    BlockIterator it = new BlockIterator(player, 100);
+	 
+	    // 手前側から検証を行う。
+	    // Blockが取得できた時点でreturnして終了する。
+	    while ( it.hasNext() ) {
+	 
+	        Block block = it.next();
+	 
+	        if ( block.getType() != Material.AIR ) {
+	            // ブロックが見つかった
+	            return block;
+	        }
+	    }
+	 
+	    // 最後までブロックがみつからなかった
+	    return null;
+	}
+}
