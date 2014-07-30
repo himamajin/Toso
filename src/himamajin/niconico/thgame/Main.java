@@ -1,7 +1,6 @@
 package himamajin.niconico.thgame;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
@@ -36,13 +35,8 @@ public class Main extends JavaPlugin{
 		//デフォルトのコンフィグを出力
 		saveDefaultConfig();
 		plugin = this;
-		File dir = new File("plugins/THgame/mission.txt");
-		try {
-			dir.createNewFile();
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
+		File dir = new File("plugins/THgame/book");
+		if(!dir.exists())dir.mkdir();
 	
 		//'toso'というコマンドが打たれた時Commandを呼び出す
         getCommand("toso").setExecutor(new THCommand());
