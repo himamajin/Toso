@@ -3,10 +3,13 @@ package himamajin.niconico.thgame;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scoreboard.Team;
 
 /**
@@ -37,7 +40,7 @@ public class THCommand implements CommandExecutor {
 	if(args[0].equals("hunter")){
 		        Player target = Bukkit.getServer().getPlayerExact(args[1]);
 		        if (target == null) {
-		            sender.sendMessage(args[1] + " というプレイヤーは見つかりません");
+		            sender.sendMessage(ChatColor.RED+"[THgame]"+ args[1] + " というプレイヤーは見つかりません");
 		            return true;
 		        }
 
@@ -51,11 +54,11 @@ public class THCommand implements CommandExecutor {
 					Team team = Main.teamRed;
 					team.addPlayer(target);
 					String name = target.getPlayerListName();
-					player.sendMessage(ChatColor.GREEN+name+"をハンターに追加しました");
+					player.sendMessage(ChatColor.GREEN+"[THgame]"+name+"をハンターに追加しました");
 					return true;
 		        }else{
 		        	//すでに登録されている場合
-		        	player.sendMessage(ChatColor.RED+"このプレイヤーはすでに登録されています");
+		        	player.sendMessage(ChatColor.RED+"[THgame]"+"このプレイヤーはすでに登録されています");
 		        	return true;
 		        }
 
@@ -65,14 +68,14 @@ public class THCommand implements CommandExecutor {
 	if(args[0].equals("player")){
 		        Player target = Bukkit.getServer().getPlayerExact(args[1]);
 		        if (target == null) {
-		            sender.sendMessage(args[1] + " というプレイヤーは見つかりません");
+		            sender.sendMessage(args[1] + "[THgame]"+" というプレイヤーは見つかりません");
 		            return true;
 		        }
 
 		        int check = Main.hunter.indexOf(target);
 		        if(check == -1){
 					String name = target.getPlayerListName();
-					player.sendMessage(ChatColor.RED+name+"はハンターではありません！");
+					player.sendMessage(ChatColor.RED+"[THgame]"+name+"はすでに逃走者です");
 					return true;
 		        }else{
 		        	//arraylist[hunter]から追放。チームを空にする。
@@ -80,7 +83,8 @@ public class THCommand implements CommandExecutor {
 					Team team = Main.teamRed;
 					team.removePlayer(target);
 					String name = target.getPlayerListName();
-					player.sendMessage(ChatColor.GREEN+name+"をハンターから逃走者へと変更しました");
+					player.sendMessage(ChatColor.GREEN+"[THgame]"+name+"をハンターから逃走者へと変更しました");
+					return true;
 
 		        }
 
@@ -92,7 +96,27 @@ public class THCommand implements CommandExecutor {
 			}
 			//bookの時
 	if(args[0].equals("book")){
-
+	            	if(args.length==1){
+			        //toso book だけなので本を配布する。
+	            		//逃走者のみ本を配布
+	            		for(Player p : Bukkit.getServer().getOnlinePlayers()){
+	            	        int check = Main.hunter.indexOf(p);
+	        		        if(check == -1){
+	        		        	//プレイヤーがハンターではない場合
+	        		        	ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+	        		    		BookMeta meta = (BookMeta) book.getItemMeta();
+	        		    		meta.setTitle("携帯電話");
+	        		    		book.setItemMeta(meta);
+	        		    		p.getInventory().addItem(book);
+	        		        	p.updateInventory();
+	        		        	p.sendMessage(ChatColor.GOLD+"運営より携帯電話が届きました！");
+	        		        }else{
+	        		        	//ハンターの場合なにもしない
+	        		        }
+	            		}
+	            		return true;
+		        	      
+		           }
 			}
 			//missionの時
 	if(args[0].equals("mission")){
@@ -108,7 +132,7 @@ public class THCommand implements CommandExecutor {
 				PL.getConfig().set("jail.x", xjail);
 				PL.getConfig().set("jail.y", yjail);
 				PL.getConfig().set("jail.z", zjail);
-				player.sendMessage(ChatColor.GREEN+"牢屋を登録しました");
+				player.sendMessage(ChatColor.GREEN+"[THgame]"+"牢屋を登録しました");
 				PL.saveConfig();
 				return true;
 
@@ -123,7 +147,7 @@ public class THCommand implements CommandExecutor {
 				PL.getConfig().set("rv.x", xrv);
 				PL.getConfig().set("rv.y", yrv);
 				PL.getConfig().set("rv.z", zrv);
-				player.sendMessage(ChatColor.GREEN+"復活地点を登録しました");
+				player.sendMessage(ChatColor.GREEN+"[THgame]"+"復活地点を登録しました");
 				PL.saveConfig();
 				return true;
 
@@ -150,7 +174,7 @@ public class THCommand implements CommandExecutor {
 				PL.getConfig().set("arena.x", xarena);
 				PL.getConfig().set("arena.y", yarena);
 				PL.getConfig().set("arena.z", zarena);
-				player.sendMessage(ChatColor.GREEN+"逃走者スタート地点を登録しました");
+				player.sendMessage(ChatColor.GREEN+"[THgame]"+"逃走者スタート地点を登録しました");
 				PL.saveConfig();
 				return true;
 
